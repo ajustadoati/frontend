@@ -1,0 +1,20 @@
+<div class="min-h-screen bg-gray-50/50 flex flex-col">
+
+  <!-- Header -->
+  <header class="w-full z-50">
+    <nav class="bg-white shadow px-4 py-2">
+      <app-header></app-header>
+    </nav>
+  </header>
+
+  <!-- Main content -->
+  <main class="flex-grow flex items-center justify-center px-4">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white text-blue-gray-600 py-4 shadow">
+    <app-footer></app-footer>
+  </footer>
+
+</div>
