@@ -1,5 +1,9 @@
 <div class="w-full max-w-md flex flex-col items-center gap-4 text-center">
-  <img src="assets/images/logo_ajustado.png" alt="Logo AjustadoA Ti" class="w-40 mx-auto" />
+  <img
+    src="assets/images/logo_ajustado.png"
+    alt="Logo AjustadoA Ti"
+    class="w-40 mx-auto"
+  />
 
   <input
     type="text"
@@ -9,16 +13,21 @@
 
   <select
     class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring"
+    [(ngModel)]="selectedCategoryId"
+    (ngModelChange)="onCategorySelected(selectedCategoryId)"
   >
     <option>-- Seleccione Categoría --</option>
-    <option *ngFor="let cat of categorias">{{ cat }}</option>
+    <option *ngFor="let category of categories" [value]="category.id">
+      {{ category.name }}
+    </option>
   </select>
 
-  <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded" (click)="abrirModal()">
+  <button
+    class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
+    (click)="abrirModal()"
+  >
     Buscar
   </button>
-
-
 </div>
 <!-- Modal -->
 <div
@@ -36,21 +45,53 @@
 
     <!-- Contenido -->
     <div class="p-6">
-      <p class="text-gray-600 mb-4">Aquí irá el mapa con los proveedores que respondan.</p>
-      
+      <p class="text-gray-600 mb-4">Buscando.</p>
+
       <!-- Aquí puedes insertar tu mapa o componente del mapa -->
-      <div class="w-full h-64 bg-gray-100 flex items-center justify-center rounded-lg">
+      <div
+        class="w-full h-64 bg-gray-100 flex items-center justify-center rounded-lg"
+      >
         <div class="w-full h-64">
-  <google-map
-    [height]="'100%'"
-    [width]="'100%'"
-    [center]="center"
-    [zoom]="zoom"
-  >
-    <map-marker *ngFor="let marker of markers" [position]="marker"></map-marker>
-    <map-marker [position]="center" [title]="'Tú estás aquí'"></map-marker>
-  </google-map>
-</div>
+          <google-map
+            [height]="'100%'"
+            [width]="'100%'"
+            [center]="center"
+            [zoom]="zoom"
+            [options]="options"
+          >
+            <map-advanced-marker
+              #markerElem="mapAdvancedMarker"
+              *ngFor="let marker of markers"
+              [position]="marker"
+              [title]="marker.user?.name || 'Ubicación actual'"
+              [content]="marker.content"
+              (mapClick)="onMarkerClick(markerElem, marker)"
+            >
+              <div class="marker-icon">📍</div>
+            </map-advanced-marker>
+            <map-info-window #infoWindow>
+              <div class="p-3 text-sm w-64">
+                <h3 class="text-lg font-semibold text-green-700 mb-2">
+                 Nombre: {{ selectedMarker?.user?.name }}
+                </h3>
+                <div class="space-y-1 text-gray-700">
+                  <div *ngIf="selectedMarker?.user?.phone">
+                    <span class="font-medium">📞 Teléfono:</span>
+                    {{ selectedMarker?.user.phone }}
+                  </div>
+                  <div *ngIf="selectedMarker?.user?.address">
+                    <span class="font-medium">📧 Email:</span>
+                    {{ selectedMarker?.user.email }}
+                  </div>
+                  <div *ngIf="selectedMarker?.user?.name !== undefined">
+                    <span class="font-medium">⭐ Rating:</span>
+                    {{ selectedMarker?.user.rating }}/5
+                  </div>
+                </div>
+              </div>
+            </map-info-window>
+          </google-map>
+        </div>
       </div>
     </div>
   </div>
